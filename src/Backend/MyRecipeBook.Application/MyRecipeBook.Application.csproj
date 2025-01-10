@@ -7,9 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
-      <ProjectReference Include="..\MyRecipeBook.Domain\MyRecipeBook.Domain.csproj" />
-      <ProjectReference Include="..\MyRecipeBook.Exceptions\MyRecipeBook.Exceptions.csproj" />
+      <ProjectReference Include="..\..\Shared\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
+      <ProjectReference Include="..\..\Shared\MyRecipeBook.Exceptions\MyRecipeBook.Exceptions.csproj" />
     </ItemGroup>
 
 </Project>

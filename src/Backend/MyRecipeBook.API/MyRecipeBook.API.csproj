@@ -18,6 +18,9 @@
       <ProjectReference Include="..\..\..\MyRecipeBook.Application\MyRecipeBook.Application.csproj" />
       <ProjectReference Include="..\..\..\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
       <ProjectReference Include="..\..\..\MyRecipeBook.Exceptions\MyRecipeBook.Exceptions.csproj" />
+      <ProjectReference Include="..\..\Shared\MyRecipeBook.Communication\MyRecipeBook.Communication.csproj" />
+      <ProjectReference Include="..\..\Shared\MyRecipeBook.Exceptions\MyRecipeBook.Exceptions.csproj" />
+      <ProjectReference Include="..\MyRecipeBook.Application\MyRecipeBook.Application.csproj" />
     </ItemGroup>
 
 </Project>
