@@ -1,3 +1,5 @@
+using MyRecipeBook.API.Middleware;
+
 namespace MyRecipeBook.API;
 
 public class Program
@@ -21,6 +23,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseMiddleware<CultureMiddleware>();
 
         app.UseHttpsRedirection();
 
