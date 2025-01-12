@@ -2,13 +2,17 @@ using MyRecipeBook.Application.Services.AutoMapper;
 using MyRecipeBook.Application.Services.Cryptograhy;
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Domain.Repositories.User;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UserCases.User.Register;
 
 public class RegisterUserCase
 {
-    public ResponseRegisteredUserJson Execute(RequestRegisterUserJson request)
+    private readonly IUserReadOnlyRepository _readOnlyRepository;
+    private readonly IUserWriteOnlyRepository _writeOnlyRepository;
+    
+    public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
     {
         var hashedPassword = new PasswordSecurityService();
         var autoMapper = new AutoMapper.MapperConfiguration(Options =>
@@ -20,7 +24,7 @@ public class RegisterUserCase
         var user = autoMapper.Map<Domain.Entities.User>(request);
         user.Password = hashedPassword.GenerateHash(request.Password);
         
-        // salvar no banco de dados
+        await _writeOnlyRepository.Add(user);
         
         return new ResponseRegisteredUserJson
         {
