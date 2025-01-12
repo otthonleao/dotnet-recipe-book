@@ -1,5 +1,6 @@
 using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UserCases.User.Register;
 
@@ -21,8 +22,8 @@ public class RegisterUserCase
     
         if (!result.IsValid)
         {
-            var errorMessages = result.Errors.Select(error => error.ErrorMessage);
-            throw new Exception();
+            var errorMessages = result.Errors.Select(error => error.ErrorMessage).ToList();
+            throw new ErrorOnValidationException(errorMessages);
         }
     }
 }
