@@ -1,0 +1,47 @@
+services:
+  db-postgres:
+    image: postgres:17.2-alpine3.21
+    container_name: dev-postgresql
+    environment:
+      POSTGRES_DB: dotnet-livro-receitas_db
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker123
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-postgres-data:/var/lib/postgresql/data
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512M"
+          
+  db-mysql:
+    image: mysql:8.4.3
+    container_name: dev-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: dotnet-livro-receitas_db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker123
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-mysql-data:/var/lib/mysql
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512M"
+
+volumes:
+  db-postgres-data:
+  db-mysql-data:
+
+networks:
+  dev-network:
+    driver: bridge
