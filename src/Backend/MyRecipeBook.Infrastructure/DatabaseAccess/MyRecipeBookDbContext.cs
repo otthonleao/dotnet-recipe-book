@@ -12,5 +12,6 @@ public class MyRecipeBookDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyRecipeBookDbContext).Assembly);
+        modelBuilder.Entity<User>().ToTable("Users");
     }
 }

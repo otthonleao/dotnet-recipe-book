@@ -7,10 +7,16 @@ namespace MyRecipeBook.Infrastructure.DatabaseAccess.Repositories;
 public class UserRepository : IUserReadOnlyRepository, IUserWriteOnlyRepository
 {
     private readonly MyRecipeBookDbContext _dbContext;
+
+    public UserRepository(MyRecipeBookDbContext context)
+    {
+        _dbContext = context;
+    }
     
-    public UserRepository(MyRecipeBookDbContext context) => _dbContext = context;
-    
-    public async Task Add(User user) => await _dbContext.Users.AddAsync(user);
+    public async Task Add(User user)
+    {
+        await _dbContext.Users.AddAsync(user);
+    }
 
     public async Task<bool> ExistsActiveUserWithEmail(string email)
     {

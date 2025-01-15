@@ -5,10 +5,16 @@ namespace MyRecipeBook.Application.Services.Cryptograhy;
 
 public class PasswordSecurityService
 {
+    private readonly string _additionalKey;
+
+    public PasswordSecurityService(string additionalKey)
+    {
+        _additionalKey = additionalKey;
+    }
+
     public string GenerateHash(string password)
     {
-        const string additionalKey = "MyRecipeBook";
-        var newPassword = $"{password}{additionalKey}";
+        var newPassword = $"{password}{_additionalKey}";
         
         var bytes = Encoding.UTF8.GetBytes(password);
         var hash = SHA512.HashData(bytes);
