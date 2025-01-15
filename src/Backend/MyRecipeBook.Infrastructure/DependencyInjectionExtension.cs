@@ -1,3 +1,5 @@
+using System.Reflection;
+using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,9 +18,15 @@ public static class DependencyInjectionExtension
     {
         var databaseType = configuration.DatabaseType();
         if (databaseType == DatabaseType.Postgres)
+        {
             AddDbContext_Postgres(services, configuration);
+            AddFluentMigrator_Postgres(services, configuration);
+        }
         else if (databaseType == DatabaseType.MySql)
+        {
             AddDbContext_MySql(services, configuration);
+            AddFluentMigrator_MySql(services, configuration);
+        }
         
         AddRepositories(services);
     }
@@ -41,5 +49,29 @@ public static class DependencyInjectionExtension
         services.AddScoped<IUserReadOnlyRepository, UserRepository>();
         services.AddScoped<IUserWriteOnlyRepository, UserRepository>();
         services.AddScoped<IUnitWork, UnitOfWork>();
+    }
+    
+    private static void AddFluentMigrator_MySql(IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.ConnectionString();
+        services.AddFluentMigratorCore().ConfigureRunner(options =>
+        {
+            options
+                .AddMySql8()
+                .WithGlobalConnectionString(connectionString)
+                .ScanIn(Assembly.Load("MyRecipeBook.Infrastructure")).For.All();
+        });
+    }
+    
+    private static void AddFluentMigrator_Postgres(IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.ConnectionString();
+        services.AddFluentMigratorCore().ConfigureRunner(options =>
+        {
+            options
+                .AddPostgres()
+                .WithGlobalConnectionString(connectionString)
+                .ScanIn(Assembly.Load("MyRecipeBook.Infrastructure")).For.All();
+        });
     }
 }

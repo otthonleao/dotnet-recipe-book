@@ -1,4 +1,6 @@
 using Dapper;
+using FluentMigrator.Runner;
+using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Enums;
 using MySqlConnector;
 using Npgsql;
@@ -7,12 +9,14 @@ namespace MyRecipeBook.Infrastructure.Migrations;
 
 public class DatabaseMigration
 {
-    public static void Migrate(DatabaseType databaseType, string connectionString)
+    public static void Migrate(DatabaseType databaseType, string connectionString, IServiceProvider serviceProvider)
     {
         if (databaseType == DatabaseType.Postgres)
             EnsureDatabaseCreated_Postgres(connectionString);
         else if (databaseType == DatabaseType.MySql)
             EnsureDatabaseCreated_MySql(connectionString);
+        
+        MigrationDatabase(serviceProvider);
     }
 
     private static void EnsureDatabaseCreated_Postgres(string connectionString)
@@ -50,5 +54,12 @@ public class DatabaseMigration
             dbConnection.Execute($"CREATE DATABASE `{databaseName}`");
         else
             Console.WriteLine($"CODE_INFO => DATABASE '{databaseName}' JÁ EXISTE.");
+    }
+    
+    private static void MigrationDatabase(IServiceProvider serviceProvider)
+    {
+        var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+        runner.ListMigrations();
+        runner.MigrateUp();
     }
 }
