@@ -60,6 +60,40 @@ public class RegisterUserValidatorTest
         result.Errors.Should().ContainSingle().And.Contain(e => e.ErrorMessage.Equals("Email is invalid"));
         
     }
+    
+    [Fact]
+    public void Error_Password_Empty()
+    {
+        var validator = new RegisterUserValidator();
+        
+        var request = RequestRegisterUserJsonBuilder.Build();
+        request.Password = string.Empty;
+        var result = validator.Validate(request);
+        
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().ContainSingle()
+            .And.Contain(e => e.ErrorMessage.Equals("Password is required"));
+        
+    }
+    
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(5)]
+    public void Error_Password_Invalid(int passwordLength)
+    {
+        var validator = new RegisterUserValidator();
+        
+        var request = RequestRegisterUserJsonBuilder.Build(passwordLength);
+        var result = validator.Validate(request);
+        
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().ContainSingle()
+            .And.Contain(e => e.ErrorMessage.Equals("Password must have at least 6 characters"));
+        
+    }
 
 
 }
