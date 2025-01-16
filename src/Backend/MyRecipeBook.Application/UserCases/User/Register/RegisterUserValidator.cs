@@ -10,9 +10,14 @@ public class RegisterUserValidator : AbstractValidator<RequestRegisterUserJson>
     {
         RuleFor(user => user.Name)
             .NotEmpty().WithMessage(ResourcesMessagesExceptions.NAME_EMPTY);
+        
         RuleFor(user => user.Email)
-            .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("Email is invalid");
+            .NotEmpty().WithMessage("Email is required");
+        When(user => string.IsNullOrEmpty(user.Email) == false, () =>
+        {
+            RuleFor(user => user.Email).EmailAddress().WithMessage("Email is invalid");
+        });
+        
         RuleFor(user => user.Password.Length)
             .NotEmpty().WithMessage("Password is required")
             .GreaterThanOrEqualTo(6).WithMessage("Password must have at least 6 characters");

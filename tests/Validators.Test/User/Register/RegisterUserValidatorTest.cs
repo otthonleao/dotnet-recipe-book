@@ -1,6 +1,7 @@
 using CommonTestUtilities.Requests;
 using FluentAssertions;
 using MyRecipeBook.Application.UserCases.User.Register;
+using MyRecipeBook.Exceptions;
 
 namespace Validators.Test.User.Register;
 
@@ -15,4 +16,50 @@ public class RegisterUserValidatorTest
         
         result.IsValid.Should().BeTrue();
     }
+    
+    [Fact]
+    public void Error_Name_Empty()
+    {
+        var validator = new RegisterUserValidator();
+        var request = RequestRegisterUserJsonBuilder.Build();
+        request.Name = string.Empty;
+        
+        var result = validator.Validate(request);
+        
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().ContainSingle()
+            .And.Contain(e => e.ErrorMessage.Equals(ResourcesMessagesExceptions.NAME_EMPTY));
+    }
+    
+    [Fact]
+    public void Error_Email_Empty()
+    {
+        var validator = new RegisterUserValidator();
+        
+        var request = RequestRegisterUserJsonBuilder.Build();
+        request.Email = string.Empty;
+        var result = validator.Validate(request);
+        
+        // A validação para email vazio
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().ContainSingle().And.Contain(e => e.ErrorMessage.Equals("Email is required"));
+        
+    }
+    
+    [Fact]
+    public void Error_Email_Invalid()
+    {
+        var validator = new RegisterUserValidator();
+        
+        var request = RequestRegisterUserJsonBuilder.Build();
+        request.Email = "otthon-mail";
+        var result = validator.Validate(request);
+        
+        // A validação para email vazio
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().ContainSingle().And.Contain(e => e.ErrorMessage.Equals("Email is invalid"));
+        
+    }
+
+
 }
