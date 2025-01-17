@@ -8,7 +8,7 @@ using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UserCases.User.Register;
 
-public class RegisterUserCase : IRegisterUserCase
+public class RegisterUserUseCase : IRegisterUserUseCase
 {
     private readonly IUserReadOnlyRepository _readOnlyRepository;
     private readonly IUserWriteOnlyRepository _writeOnlyRepository;
@@ -16,7 +16,7 @@ public class RegisterUserCase : IRegisterUserCase
     private readonly PasswordSecurityService _hashedPassword;
     private readonly IUnitWork _unitWork;
     
-    public RegisterUserCase(IUserReadOnlyRepository readOnlyRepository, IUserWriteOnlyRepository writeOnlyRepository, IMapper mapper, PasswordSecurityService hashedPassword, IUnitWork unitWork)
+    public RegisterUserUseCase(IUserReadOnlyRepository readOnlyRepository, IUserWriteOnlyRepository writeOnlyRepository, IMapper mapper, PasswordSecurityService hashedPassword, IUnitWork unitWork)
     {
         _readOnlyRepository = readOnlyRepository;
         _writeOnlyRepository = writeOnlyRepository;

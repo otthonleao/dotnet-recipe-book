@@ -25,7 +25,7 @@ public static class DependencyInjectionExtension
     
     private static void AddUserCases(this IServiceCollection services)
     {
-        services.AddScoped<IRegisterUserCase, RegisterUserCase>();
+        services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
     }
     
     private static void AddPasswordSecurityService(this IServiceCollection services, IConfiguration configuration)
