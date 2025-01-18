@@ -2,7 +2,7 @@ using MyRecipeBook.Domain.Repositories;
 
 namespace MyRecipeBook.Infrastructure.DatabaseAccess;
 
-public class UnitOfWork : IUnitWork
+public class UnitOfWork : IUnitOfWork
 {
     private readonly MyRecipeBookDbContext _dbContext;
     

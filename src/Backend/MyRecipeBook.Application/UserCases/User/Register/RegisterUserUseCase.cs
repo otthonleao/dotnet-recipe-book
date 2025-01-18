@@ -8,21 +8,21 @@ using MyRecipeBook.Exceptions.ExceptionsBase;
 
 namespace MyRecipeBook.Application.UserCases.User.Register;
 
-public class RegisterUserCase : IRegisterUserCase
+public class RegisterUserUseCase : IRegisterUserUseCase
 {
     private readonly IUserReadOnlyRepository _readOnlyRepository;
     private readonly IUserWriteOnlyRepository _writeOnlyRepository;
     private readonly IMapper _mapper;
     private readonly PasswordSecurityService _hashedPassword;
-    private readonly IUnitWork _unitWork;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public RegisterUserCase(IUserReadOnlyRepository readOnlyRepository, IUserWriteOnlyRepository writeOnlyRepository, IMapper mapper, PasswordSecurityService hashedPassword, IUnitWork unitWork)
+    public RegisterUserUseCase(IUserReadOnlyRepository readOnlyRepository, IUserWriteOnlyRepository writeOnlyRepository, IMapper mapper, PasswordSecurityService hashedPassword, IUnitOfWork unitOfWork)
     {
         _readOnlyRepository = readOnlyRepository;
         _writeOnlyRepository = writeOnlyRepository;
         _mapper = mapper;
         _hashedPassword = hashedPassword;
-        _unitWork = unitWork;
+        _unitOfWork = unitOfWork;
     }
     
     public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
@@ -32,7 +32,7 @@ public class RegisterUserCase : IRegisterUserCase
         user.Password = _hashedPassword.GenerateHash(request.Password);
         
         await _writeOnlyRepository.Add(user);
-        await _unitWork.Commit();
+        await _unitOfWork.Commit();
         
         return new ResponseRegisteredUserJson
         {
