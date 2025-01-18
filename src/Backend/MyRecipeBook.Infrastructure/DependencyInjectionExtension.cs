@@ -48,7 +48,7 @@ public static class DependencyInjectionExtension
     {
         services.AddScoped<IUserReadOnlyRepository, UserRepository>();
         services.AddScoped<IUserWriteOnlyRepository, UserRepository>();
-        services.AddScoped<IUnitWork, UnitOfWork>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
     
     private static void AddFluentMigrator_MySql(IServiceCollection services, IConfiguration configuration)
