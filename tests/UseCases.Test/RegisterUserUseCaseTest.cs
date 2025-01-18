@@ -4,6 +4,7 @@ using CommonTestUtilities.Repository;
 using CommonTestUtilities.Requests;
 using FluentAssertions;
 using MyRecipeBook.Application.UserCases.User.Register;
+using MyRecipeBook.Exceptions.ExceptionsBase;
 
 
 namespace UseCases.Test;
@@ -21,15 +22,29 @@ public class RegisterUserUseCaseTest
         result.Should().NotBeNull();
         result.Name.Should().Be(request.Name);
     }
+    
+    [Fact]
+    public async Task Error_Email_Alredy_Registered()
+    {
+        var request = RequestRegisterUserJsonBuilder.Build();
+        var useCase = CreateUseCase(request.Email);
+        
+        Func<Task> act = async () => await useCase.Execute(request);
+        (await act.Should().ThrowAsync<ErrorOnValidationException>())
+            .Where(e => e.ErrorMessages.Count == 1 && e.ErrorMessages[0].Contains("Email already exists"));
+    }
 
-    private RegisterUserUseCase CreateUseCase()
+    private RegisterUserUseCase CreateUseCase(string? email = null)
     {
         var mapper = MapperBuilder.Build();
         var passwordHashed = PasswordEncripterBuilder.Build();
         var writeRepository = UserWriteOnlyRepositoryBuilder.Build();
         var unitOfWork = UnitOfWorkBuilder.Build();
-        var readRepository = new UserReadOnlyRepositoryBuilder().Build();
+        var readRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
         
-        return new RegisterUserUseCase(readRepository, writeRepository, mapper, passwordHashed, unitOfWork);
+        if(string.IsNullOrEmpty(email) == false)
+            readRepositoryBuilder.ExistsActiveUserWithEmail(email);
+        
+        return new RegisterUserUseCase(readRepositoryBuilder.Build(), writeRepository, mapper, passwordHashed, unitOfWork);
     }
 }
