@@ -4,6 +4,7 @@ using CommonTestUtilities.Repository;
 using CommonTestUtilities.Requests;
 using FluentAssertions;
 using MyRecipeBook.Application.UserCases.User.Register;
+using MyRecipeBook.Exceptions;
 using MyRecipeBook.Exceptions.ExceptionsBase;
 
 
@@ -32,6 +33,19 @@ public class RegisterUserUseCaseTest
         Func<Task> act = async () => await useCase.Execute(request);
         (await act.Should().ThrowAsync<ErrorOnValidationException>())
             .Where(e => e.ErrorMessages.Count == 1 && e.ErrorMessages[0].Contains("Email already exists"));
+    }
+    
+    [Fact]
+    public async Task Error_Name_Empty()
+    {
+        var request = RequestRegisterUserJsonBuilder.Build();
+        request.Name = string.Empty;
+        
+        var useCase = CreateUseCase();
+        
+        Func<Task> act = async () => await useCase.Execute(request);
+        (await act.Should().ThrowAsync<ErrorOnValidationException>())
+            .Where(e => e.ErrorMessages.Count == 1 && e.ErrorMessages[0].Contains(ResourcesMessagesExceptions.NAME_EMPTY));
     }
 
     private RegisterUserUseCase CreateUseCase(string? email = null)
