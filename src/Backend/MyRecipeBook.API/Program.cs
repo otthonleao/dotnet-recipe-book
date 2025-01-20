@@ -5,50 +5,43 @@ using MyRecipeBook.Infrastructure;
 using MyRecipeBook.Infrastructure.Extensions;
 using MyRecipeBook.Infrastructure.Migrations;
 
-namespace MyRecipeBook.API;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
-        builder.Services.AddApplication(builder.Configuration);
-        builder.Services.AddInfrastructure(builder.Configuration);
-
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
-        app.UseMiddleware<CultureMiddleware>();
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthorization();
-        
-        app.MapControllers();
-        
-        MigrateDatabase();
-
-        app.Run();
-
-        void MigrateDatabase()
-        {
-            var databaseType = builder.Configuration.DatabaseType();
-            var connectionString = builder.Configuration.ConnectionString();
-            var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            
-            DatabaseMigration.Migrate(databaseType, connectionString, serviceScope.ServiceProvider);
-        }
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseMiddleware<CultureMiddleware>();
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+MigrateDatabase();
+
+app.Run();
+
+void MigrateDatabase()
+{
+    var databaseType = builder.Configuration.DatabaseType();
+    var connectionString = builder.Configuration.ConnectionString();
+    var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+    DatabaseMigration.Migrate(databaseType, connectionString, serviceScope.ServiceProvider);
+}
+
