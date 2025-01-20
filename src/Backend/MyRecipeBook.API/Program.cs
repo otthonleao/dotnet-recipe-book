@@ -45,3 +45,7 @@ void MigrateDatabase()
     DatabaseMigration.Migrate(databaseType, connectionString, serviceScope.ServiceProvider);
 }
 
+public partial class Program
+{
+    protected Program() { }
+}
