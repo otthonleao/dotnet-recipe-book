@@ -28,6 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UseCases.Test", "tests\UseC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Test", "tests\WebApi.Test\WebApi.Test.csproj", "{945435F0-CCCC-4F40-AE18-2CC2FECEADD9}"
 EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +47,7 @@ Global
 		{8886F5F9-F8BB-4E29-9256-84ABBA7651FC} = {7C31C846-83FF-48BE-AED0-B6A9C3866751}
 		{4554994E-4E25-4A3D-BF4F-2B6F0EA78B7F} = {7C31C846-83FF-48BE-AED0-B6A9C3866751}
 		{945435F0-CCCC-4F40-AE18-2CC2FECEADD9} = {7C31C846-83FF-48BE-AED0-B6A9C3866751}
+
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E490B190-0A11-4547-A6BA-9F5B9AE0A9CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
