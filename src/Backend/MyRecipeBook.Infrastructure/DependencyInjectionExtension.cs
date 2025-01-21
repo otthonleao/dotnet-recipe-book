@@ -16,6 +16,11 @@ public static class DependencyInjectionExtension
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        AddRepositories(services);
+        
+        if (configuration.IsUnitTestEnviroment())
+            return;
+        
         var databaseType = configuration.DatabaseType();
         if (databaseType == DatabaseType.Postgres)
         {
@@ -28,7 +33,7 @@ public static class DependencyInjectionExtension
             AddFluentMigrator_MySql(services, configuration);
         }
         
-        AddRepositories(services);
+        
     }
     
     public static void AddDbContext_Postgres(IServiceCollection services, IConfiguration configuration)
