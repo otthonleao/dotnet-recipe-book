@@ -5,50 +5,50 @@ using MyRecipeBook.Infrastructure;
 using MyRecipeBook.Infrastructure.Extensions;
 using MyRecipeBook.Infrastructure.Migrations;
 
-namespace MyRecipeBook.API;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    public static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-        // Add services to the container.
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
-        builder.Services.AddApplication(builder.Configuration);
-        builder.Services.AddInfrastructure(builder.Configuration);
+app.UseMiddleware<CultureMiddleware>();
 
-        var app = builder.Build();
+app.UseHttpsRedirection();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+app.UseAuthorization();
 
-        app.UseMiddleware<CultureMiddleware>();
+app.MapControllers();
 
-        app.UseHttpsRedirection();
+MigrateDatabase();
 
-        app.UseAuthorization();
-        
-        app.MapControllers();
-        
-        MigrateDatabase();
+app.Run();
 
-        app.Run();
+void MigrateDatabase()
+{
+    if (builder.Configuration.IsUnitTestEnviroment())
+        return;
+    
+    var databaseType = builder.Configuration.DatabaseType();
+    var connectionString = builder.Configuration.ConnectionString();
+    var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-        void MigrateDatabase()
-        {
-            var databaseType = builder.Configuration.DatabaseType();
-            var connectionString = builder.Configuration.ConnectionString();
-            var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            
-            DatabaseMigration.Migrate(databaseType, connectionString, serviceScope.ServiceProvider);
-        }
-    }
+    DatabaseMigration.Migrate(databaseType, connectionString, serviceScope.ServiceProvider);
+}
+
+public partial class Program
+{
+    protected Program() { }
 }
